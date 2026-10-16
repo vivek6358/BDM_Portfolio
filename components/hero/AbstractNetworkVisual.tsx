@@ -68,8 +68,9 @@ export default function AbstractNetworkVisual() {
     >
       {/* Background radial atmosphere */}
       <div
-        className="absolute w-3/4 h-3/4 rounded-full bg-[#00C878]/5 blur-3xl pointer-events-none transition-transform duration-700 ease-out"
+        className="absolute w-3/4 h-3/4 rounded-full pointer-events-none transition-transform duration-700 ease-out"
         style={{
+          background: "radial-gradient(circle, rgba(0, 200, 120, 0.08) 0%, transparent 70%)",
           transform: !isTouch ? `translate(${mouseOffset.x * 1.5}px, ${mouseOffset.y * 1.5}px)` : "none",
         }}
       />
