@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { motion, useSpring, useMotionValue } from "framer-motion";
 
 /**
- * Realistic Dual-Blade Black Propeller with White Tip Stripes
- * Rotates smoothly in an isometric elliptical rotor disc
+ * High-Performance Dual-Blade Black Propeller with White Tip Stripes
+ * Optimized for 60fps/120fps hardware acceleration with zero drop-shadow raster overhead
  */
 function BlackPropeller({
   size,
@@ -50,7 +49,7 @@ function BlackPropeller({
         >
           <svg
             viewBox="-120 -30 240 60"
-            className="w-full h-full drop-shadow-[0_2px_4px_rgba(0,0,0,0.65)]"
+            className="w-full h-full pointer-events-none"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -142,18 +141,23 @@ export default function ScrollDrone() {
   const [isSmallMobile, setIsSmallMobile] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Raw MotionValues for position tracking
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
+  // Direct DOM reference for zero-overhead, GPU-accelerated 60/120fps motion
+  const droneContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aerodynamic Spring Physics for silky smooth flight motion
-  // Lower stiffness & tuned damping gives realistic drone momentum during zig-zags
-  const posX = useSpring(rawX, { stiffness: 58, damping: 20, mass: 0.65 });
-  const posY = useSpring(rawY, { stiffness: 58, damping: 20, mass: 0.65 });
+  // Targets and interpolated values managed via refs to avoid React re-renders during scroll
+  const targetsRef = useRef({
+    x: 0,
+    y: 0,
+    roll: 0,
+    pitch: 0,
+  });
 
-  // Subtle momentum banking into movement
-  const rollSpring = useSpring(0, { stiffness: 95, damping: 16 });
-  const pitchSpring = useSpring(0, { stiffness: 95, damping: 16 });
+  const currentRef = useRef({
+    x: 0,
+    y: 0,
+    roll: 0,
+    pitch: 0,
+  });
 
   const prevMouseRef = useRef({ x: 0, y: 0 });
   const prevScrollYRef = useRef(0);
@@ -181,74 +185,107 @@ export default function ScrollDrone() {
     // Initial positioning:
     // On mobile: Begins at upper-right area of hero before zig-zagging
     // On desktop: Floating in hero upper right quadrant
-    const dWidth = smallMobile ? 56 : mobile ? 66 : 220;
+    const dWidth = smallMobile ? 82 : mobile ? 98 : 220;
     const initialX = mobile
-      ? width - dWidth / 2 - 24
+      ? width - dWidth / 2 - 20
       : width * 0.78;
     const initialY = mobile
       ? Math.min(window.innerHeight * 0.22, 160)
       : window.innerHeight * 0.38;
 
-    rawX.set(initialX);
-    rawY.set(initialY);
+    targetsRef.current = { x: initialX, y: initialY, roll: 0, pitch: 0 };
+    currentRef.current = { x: initialX, y: initialY, roll: 0, pitch: 0 };
     prevMouseRef.current = { x: initialX, y: initialY };
     prevScrollYRef.current = window.scrollY;
 
+    // Apply immediate initial transform
+    if (droneContainerRef.current) {
+      droneContainerRef.current.style.transform = `translate3d(${initialX}px, ${initialY}px, 0)`;
+    }
+
+    // ===================================================================
+    // HIGH-PERFORMANCE REQUESTANIMATIONFRAME LERP LOOP
+    // Zero React re-renders, silky smooth 60fps / 120fps GPU performance
+    // ===================================================================
+    let rafId: number;
+
+    const animateLoop = (timestamp: number) => {
+      const current = currentRef.current;
+      const targets = targetsRef.current;
+
+      // Silky smooth physical LERP (Linear Interpolation)
+      // 0.08 for coordinates gives momentum without lag
+      current.x += (targets.x - current.x) * 0.08;
+      current.y += (targets.y - current.y) * 0.08;
+      current.roll += (targets.roll - current.roll) * 0.1;
+      current.pitch += (targets.pitch - current.pitch) * 0.1;
+
+      // Gentle natural micro-hover oscillation
+      const hoverY = Math.sin(timestamp * 0.0022) * 3.5;
+      const hoverRoll = Math.cos(timestamp * 0.0018) * 1.2;
+
+      if (droneContainerRef.current) {
+        const finalX = current.x;
+        const finalY = current.y + hoverY;
+        const finalRoll = current.roll + hoverRoll;
+        const finalPitch = current.pitch;
+
+        droneContainerRef.current.style.transform = `translate3d(${finalX}px, ${finalY}px, 0) rotateZ(${finalRoll}deg) rotateX(${finalPitch}deg)`;
+      }
+
+      rafId = requestAnimationFrame(animateLoop);
+    };
+
+    rafId = requestAnimationFrame(animateLoop);
+
     // ===================================================================
     // MOBILE SCROLL-DRIVEN AUTONOMOUS ZIG-ZAG FLIGHT
-    // Smoothly sweeps across the screen in an organic harmonic wave
+    // Smoothly sweeps across the screen with zero stutter
     // ===================================================================
     const handleScroll = () => {
       if (window.innerWidth < 768) {
         const scrollY = window.scrollY;
         const width = window.innerWidth;
         const isSmall = width < 480;
-        const droneW = isSmall ? 56 : 66;
+        const droneW = isSmall ? 82 : 98;
 
-        // Keep drone fully visible with 22px safety padding from both screen edges
-        const minX = droneW / 2 + 22;
-        const maxX = width - droneW / 2 - 22;
+        // Keep drone fully visible with safety padding from both screen edges
+        const minX = droneW / 2 + 18;
+        const maxX = width - droneW / 2 - 18;
         const amplitudeX = (maxX - minX) / 2;
         const midX = (minX + maxX) / 2;
 
         // Zig-Zag harmonic wavelength:
         // ~850px scroll per full Left->Right->Left cycle
-        // Start phase (+PI/2) starts drone on right side, sweeping left as scroll starts
         const cycleDistance = 850;
         const phase = (scrollY / cycleDistance) * Math.PI * 2 + Math.PI * 0.5;
 
         // Smooth sinusoidal horizontal zig-zag
-        const targetX = midX + Math.sin(phase) * amplitudeX;
+        targetsRef.current.x = midX + Math.sin(phase) * amplitudeX;
 
         // Vertical travel corridor: Lissajous curve keeps altitude dynamic yet safe
-        // (well below navbar and well above bottom action bar)
-        const minY = Math.max(85, window.innerHeight * 0.20);
+        const minY = Math.max(90, window.innerHeight * 0.22);
         const maxY = Math.min(window.innerHeight - 100, window.innerHeight * 0.68);
         const midY = (minY + maxY) / 2;
         const amplitudeY = (maxY - minY) / 2;
-        const targetY = midY + Math.cos(phase * 0.6) * (amplitudeY * 0.65);
-
-        rawX.set(targetX);
-        rawY.set(targetY);
+        targetsRef.current.y = midY + Math.cos(phase * 0.6) * (amplitudeY * 0.65);
 
         // Aerodynamic banking physics:
-        // 1. Roll: Banks into the direction of horizontal travel (derivative of sine is cosine)
+        // 1. Roll: Banks into the direction of horizontal travel
         const xVelocityFactor = Math.cos(phase);
-        const bankRoll = Math.max(-16, Math.min(16, xVelocityFactor * 14));
-        rollSpring.set(bankRoll);
+        targetsRef.current.roll = Math.max(-16, Math.min(16, xVelocityFactor * 14));
 
         // 2. Pitch: Noses down when scrolling down, noses up when scrolling up
         const deltaY = scrollY - prevScrollYRef.current;
         prevScrollYRef.current = scrollY;
-        const targetPitch = Math.max(-14, Math.min(14, deltaY * 0.35));
-        pitchSpring.set(targetPitch);
+        targetsRef.current.pitch = Math.max(-14, Math.min(14, deltaY * 0.35));
 
-        // Smoothly level out when scrolling stops
+        // Smoothly level out when scrolling pauses
         if (levelTimeoutRef.current) clearTimeout(levelTimeoutRef.current);
         levelTimeoutRef.current = setTimeout(() => {
-          pitchSpring.set(0);
-          rollSpring.set(0);
-        }, 200);
+          targetsRef.current.pitch = 0;
+          targetsRef.current.roll = 0;
+        }, 180);
       }
     };
 
@@ -277,18 +314,15 @@ export default function ScrollDrone() {
       const deltaY = targetY - prevMouseRef.current.y;
       prevMouseRef.current = { x: targetX, y: targetY };
 
-      rawX.set(targetX);
-      rawY.set(targetY);
-
-      const targetRoll = Math.max(-14, Math.min(14, deltaX * 0.8));
-      const targetPitch = Math.max(-10, Math.min(10, deltaY * 0.6));
-      rollSpring.set(targetRoll);
-      pitchSpring.set(targetPitch);
+      targetsRef.current.x = targetX;
+      targetsRef.current.y = targetY;
+      targetsRef.current.roll = Math.max(-14, Math.min(14, deltaX * 0.8));
+      targetsRef.current.pitch = Math.max(-10, Math.min(10, deltaY * 0.6));
 
       if (levelTimeoutRef.current) clearTimeout(levelTimeoutRef.current);
       levelTimeoutRef.current = setTimeout(() => {
-        rollSpring.set(0);
-        pitchSpring.set(0);
+        targetsRef.current.roll = 0;
+        targetsRef.current.pitch = 0;
       }, 140);
     };
 
@@ -297,25 +331,25 @@ export default function ScrollDrone() {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
+      cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
       if (levelTimeoutRef.current) clearTimeout(levelTimeoutRef.current);
     };
-  }, [rawX, rawY, rollSpring, pitchSpring]);
+  }, []);
 
   if (!mounted || prefersReducedMotion) return null;
 
-  // Modern Compact Drone Dimensions:
-  // Compact stealth scout on mobile for zero text interference
-  const droneWidth = isSmallMobile ? 56 : isMobile ? 66 : 220;
-  const droneHeight = isSmallMobile ? 37 : isMobile ? 44 : 147;
+  // Modern Scaled Drone Dimensions (Increased size for enhanced mobile presence):
+  const droneWidth = isSmallMobile ? 82 : isMobile ? 98 : 220;
+  const droneHeight = isSmallMobile ? 55 : isMobile ? 65 : 147;
 
-  // Propeller sizes calibrated accurately to drone scale
-  const propSizeFL = isSmallMobile ? 24 : isMobile ? 28 : 92;
-  const propSizeRL = isSmallMobile ? 20 : isMobile ? 24 : 78;
-  const propSizeRR = isSmallMobile ? 20 : isMobile ? 24 : 78;
-  const propSizeFR = isSmallMobile ? 22 : isMobile ? 26 : 86;
+  // Propeller sizes calibrated accurately to drone motor scale
+  const propSizeFL = isSmallMobile ? 35 : isMobile ? 41 : 92;
+  const propSizeRL = isSmallMobile ? 29 : isMobile ? 35 : 78;
+  const propSizeRR = isSmallMobile ? 29 : isMobile ? 35 : 78;
+  const propSizeFR = isSmallMobile ? 32 : isMobile ? 38 : 86;
 
   return (
     <div
@@ -323,22 +357,20 @@ export default function ScrollDrone() {
       className="fixed inset-0 pointer-events-none z-30 overflow-hidden select-none"
     >
       {/* =================================================================== */}
-      {/* AUTONOMOUS DRONE WITH SMOOTH DYNAMICS & REALISTIC BLADES           */}
+      {/* GPU HARDWARE-ACCELERATED AUTONOMOUS DRONE                           */}
       {/* =================================================================== */}
-      <motion.div
+      <div
+        ref={droneContainerRef}
         style={{
-          x: posX,
-          y: posY,
-          rotateZ: rollSpring,
-          rotateX: pitchSpring,
+          transformOrigin: "center center",
         }}
         className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center justify-center will-change-transform"
       >
-        {/* Subtle Physical Ground Shadow */}
+        {/* Physical Ground Shadow (GPU cached static blurred element) */}
         <div
           className={`absolute rounded-full bg-black/40 blur-sm pointer-events-none ${
             isMobile
-              ? "-bottom-2 w-10 h-2"
+              ? "-bottom-2 w-14 h-2.5"
               : "-bottom-6 w-36 h-5 blur-md bg-black/45"
           }`}
         />
@@ -346,9 +378,7 @@ export default function ScrollDrone() {
         {/* Standalone Drone Body Assembly (ONLY THE DRONE) */}
         <div
           style={{ width: droneWidth, height: droneHeight }}
-          className={`relative select-none pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] ${
-            isMobile ? "animate-[droneHover_4s_ease-in-out_infinite]" : ""
-          }`}
+          className="relative select-none pointer-events-none"
         >
           {/* 1. HIGH-DEFINITION DRONE CHASSIS */}
           <Image
@@ -407,7 +437,7 @@ export default function ScrollDrone() {
             <BlackPropeller size={propSizeFR} direction="ccw" />
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
