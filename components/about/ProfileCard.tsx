@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Linkedin, Mail, MessageSquare, MapPin, Building, Clock, ShieldCheck } from "lucide-react";
+import { Linkedin, Mail, MessageSquare, MapPin, Building, ShieldCheck } from "lucide-react";
 import { PERSONAL_INFO, getWhatsappUrl } from "@/data/portfolioData";
 
 interface ProfileCardProps {
@@ -11,7 +11,7 @@ interface ProfileCardProps {
 }
 
 export default function ProfileCard({
-  imageSrc,
+  imageSrc = "/vivek-pic.png",
   imageAlt = "Vivek Bandari - Business Development Manager",
 }: ProfileCardProps) {
   return (
@@ -71,10 +71,10 @@ export default function ProfileCard({
             </div>
           )}
 
-          {/* Experience pill overlay */}
-          <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-[#050706]/90 border border-[#1A3025] text-[10px] font-mono text-[#F4F7F5] flex items-center gap-1.5">
-            <Clock className="w-3 h-3 text-[#00C878]" />
-            <span>1 Year Exp.</span>
+          {/* Trust status pill overlay */}
+          <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-[#050706]/90 border border-[#1A3025] text-[10px] font-mono text-[#F4F7F5] flex items-center gap-1.5 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00C878] animate-pulse" />
+            <span>Strategic Partnerships</span>
           </div>
         </div>
 

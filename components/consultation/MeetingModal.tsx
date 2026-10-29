@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { X, Calendar, MessageSquare, Mail, ExternalLink } from "lucide-react";
+import { X, Calendar, MessageSquare, Mail, ExternalLink, Clock, Video, CheckCircle2 } from "lucide-react";
 import { PERSONAL_INFO, getWhatsappUrl } from "@/data/portfolioData";
 
 interface MeetingModalProps {
@@ -26,7 +26,7 @@ export default function MeetingModal({ isOpen, onClose }: MeetingModalProps) {
 
   if (!isOpen) return null;
 
-  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL || "";
+  const bookingUrl = PERSONAL_INFO.bookingUrl;
 
   return (
     <div
@@ -55,87 +55,89 @@ export default function MeetingModal({ isOpen, onClose }: MeetingModalProps) {
           <X className="w-5 h-5" />
         </button>
 
-        {bookingUrl ? (
-          <div>
-            <div className="flex items-center gap-3 mb-4 pr-10">
-              <div className="w-10 h-10 rounded-xl bg-[#00C878]/10 border border-[#1A3025] flex items-center justify-center text-[#00C878] flex-shrink-0">
-                <Calendar className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 id="meeting-modal-title" className="text-lg xs:text-xl font-semibold text-[#F4F7F5]">
-                  Schedule a Consultation
-                </h3>
-                <p className="text-xs text-[#9AA7A0]">Direct executive calendar</p>
-              </div>
-            </div>
-
-            <p className="text-xs sm:text-sm text-[#9AA7A0] mb-6">
-              You will be redirected to Vivek’s scheduling portal to reserve a focused discovery call.
-            </p>
-
-            <a
-              href={bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex w-full min-h-[48px] items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#00C878] text-[#050706] font-semibold hover:bg-[#20E58A] transition-colors shadow-glow-emerald-sm"
-            >
-              <span>Open Scheduling Portal</span>
-              <ExternalLink className="w-4 h-4 text-[#050706]" />
-            </a>
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5 pr-10">
+          <div className="w-11 h-11 rounded-xl bg-[#00C878]/10 border border-[#00C878]/30 flex items-center justify-center text-[#00C878] flex-shrink-0 shadow-sm">
+            <Calendar className="w-5 h-5" />
           </div>
-        ) : (
           <div>
-            <div className="flex items-center gap-3 mb-4 pr-10">
-              <div className="w-10 h-10 rounded-xl bg-[#00C878]/10 border border-[#1A3025] flex items-center justify-center text-[#00C878] flex-shrink-0">
-                <Calendar className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="editorial-eyebrow font-mono text-[9px] xs:text-[10px] mb-1">
-                  DIRECT DIALOGUE
-                </span>
-                <h3 id="meeting-modal-title" className="text-lg xs:text-xl font-semibold text-[#F4F7F5]">
-                  Book a Meeting
-                </h3>
-              </div>
-            </div>
-
-            <div className="p-3.5 sm:p-4 rounded-xl bg-[#09110D] border border-[#1A3025] mb-5 sm:mb-6">
-              <p className="text-xs sm:text-sm text-[#9AA7A0] leading-relaxed">
-                Direct calendar scheduling integration is configured for active enterprise pipelines. In the interim, Vivek coordinates meetings directly to ensure immediate requirement alignment.
-              </p>
-              <div className="mt-3 pt-3 border-t border-[#1A3025] flex items-center gap-2 text-[11px] sm:text-xs text-[#9AA7A0] font-mono">
-                <span className="w-2 h-2 rounded-full bg-[#00C878] animate-ping flex-shrink-0" />
-                <span>Immediate direct response typically within 2 hours</span>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <a
-                href={getWhatsappUrl("Hi Vivek, I would like to schedule a 15-minute introductory meeting to discuss an outsourcing requirement.")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full min-h-[48px] flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#20E58A] text-[#050706] font-bold text-xs xs:text-sm transition-all shadow-glow-emerald-sm"
-              >
-                <MessageSquare className="w-4 h-4 text-[#050706]" />
-                <span>Coordinate via WhatsApp</span>
-              </a>
-
-              <a
-                href={`mailto:${PERSONAL_INFO.email}?subject=Meeting%20Request%20-%20Outsourcing%20Requirement&body=Hi%20Vivek,%0A%0AI%20would%20like%20to%20schedule%20a%20meeting%20to%20discuss%20our%20outsourcing%20requirement.%0A%0ACompany:%0ARequirement:%0APreferred%20Time:`}
-                className="w-full min-h-[48px] flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl bg-[#09110D] hover:bg-[#121F19] text-[#F4F7F5] font-medium text-xs xs:text-sm border border-[#1A3025] transition-colors"
-              >
-                <Mail className="w-4 h-4 text-[#9AA7A0]" />
-                <span>Send Meeting Invite via Email</span>
-              </a>
-            </div>
-
-            <div className="mt-5 sm:mt-6 pt-4 border-t border-[#1A3025] text-center">
-              <p className="text-xs text-[#6F7E76]">
-                Direct Line: <span className="text-[#F4F7F5] font-mono">{PERSONAL_INFO.phone}</span>
-              </p>
-            </div>
+            <span className="text-[10px] font-mono tracking-widest text-[#00C878] uppercase font-bold block mb-0.5">
+              DIRECT CALENDAR SCHEDULER
+            </span>
+            <h3 id="meeting-modal-title" className="text-lg xs:text-xl font-bold font-mono text-[#F4F7F5] uppercase">
+              Schedule a Consultation
+            </h3>
           </div>
-        )}
+        </div>
+
+        {/* Meeting Details Pill Box */}
+        <div className="p-4 rounded-xl bg-[#050706] border border-[#1A3025] mb-6 space-y-2.5">
+          <div className="flex items-center gap-2 text-xs text-[#C2D1C9]">
+            <Clock className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
+            <span><strong>Duration:</strong> 15-Minute Focused Discovery Call</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-[#C2D1C9]">
+            <Video className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
+            <span><strong>Format:</strong> Google Meet / Direct Conference Video</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-[#C2D1C9]">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
+            <span><strong>Agenda:</strong> Scope, technical feasibility & squad matching</span>
+          </div>
+        </div>
+
+        {/* PRIMARY ACTION: Direct Calendly Booking */}
+        <div className="space-y-3 mb-6">
+          <a
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#20E58A] text-[#050706] font-mono font-bold text-xs sm:text-sm transition-all shadow-glow-emerald-sm cursor-pointer"
+          >
+            <span>SELECT TIME SLOT ON CALENDLY</span>
+            <ExternalLink className="w-4 h-4 text-[#050706]" />
+          </a>
+          <p className="text-[11px] text-[#6F7E76] font-mono text-center">
+            Instantly syncs with your Google / Outlook calendar with meeting link.
+          </p>
+        </div>
+
+        {/* Separator */}
+        <div className="relative my-6 text-center">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-[#1A3025]" />
+          </div>
+          <span className="relative px-3 bg-[#0D1712] text-[10px] font-mono tracking-widest text-[#6F7E76] uppercase">
+            OR CONNECT DIRECTLY
+          </span>
+        </div>
+
+        {/* Alternative Fast Channels */}
+        <div className="space-y-2.5">
+          <a
+            href={getWhatsappUrl("Hi Vivek, I would like to schedule a 15-minute introductory meeting to discuss an outsourcing requirement.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full min-h-[44px] flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#09110D] hover:bg-[#121F19] text-[#F4F7F5] border border-[#1A3025] hover:border-[#00C878]/50 text-xs font-mono transition-colors"
+          >
+            <MessageSquare className="w-4 h-4 text-[#00C878]" />
+            <span>Coordinate Time via WhatsApp</span>
+          </a>
+
+          <a
+            href={`mailto:${PERSONAL_INFO.email}?subject=Meeting%20Request%20-%20Outsourcing%20Requirement&body=Hi%20Vivek,%0A%0AI%20would%20like%20to%20schedule%20a%20meeting%20to%20discuss%20our%20outsourcing%20requirement.%0A%0ACompany:%0ARequirement:%0APreferred%20Date%20%26%20Time:`}
+            className="w-full min-h-[44px] flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#09110D] hover:bg-[#121F19] text-[#F4F7F5] border border-[#1A3025] hover:border-[#00C878]/50 text-xs font-mono transition-colors"
+          >
+            <Mail className="w-4 h-4 text-[#9AA7A0]" />
+            <span>Email Meeting Request ({PERSONAL_INFO.email})</span>
+          </a>
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-[#1A3025] text-center">
+          <p className="text-xs text-[#6F7E76] font-mono">
+            Direct Line: <a href={`tel:${PERSONAL_INFO.rawPhone}`} className="text-[#F4F7F5] hover:text-[#00C878]">{PERSONAL_INFO.phone}</a>
+          </p>
+        </div>
       </div>
     </div>
   );

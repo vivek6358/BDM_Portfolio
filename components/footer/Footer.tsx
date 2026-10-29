@@ -36,10 +36,10 @@ export default function Footer() {
                 <a href="#hero" className="hover:text-[#00C878] transition-colors py-1 inline-block">Portfolio</a>
               </li>
               <li>
-                <a href="#capabilities" className="hover:text-[#00C878] transition-colors py-1 inline-block">Capabilities</a>
+                <a href="#about" className="hover:text-[#00C878] transition-colors py-1 inline-block">About Vivek</a>
               </li>
               <li>
-                <a href="#process" className="hover:text-[#00C878] transition-colors py-1 inline-block">How I Work</a>
+                <a href="#capabilities" className="hover:text-[#00C878] transition-colors py-1 inline-block">Capabilities</a>
               </li>
               <li>
                 <a href="#contact" className="hover:text-[#00C878] transition-colors py-1 inline-block">Contact</a>

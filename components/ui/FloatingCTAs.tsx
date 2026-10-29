@@ -60,9 +60,11 @@ export default function FloatingCTAs({ onOpenMeeting }: FloatingCTAsProps) {
       </div>
 
       {/* ======================================================== */}
-      {/* MOBILE FIXED BOTTOM ACTION BAR                            */}
-      {/* ======================================================== */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-2.5 xs:p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-[#050706]/95 backdrop-blur-xl border-t border-[#1A3025] shadow-2xl animate-in fade-in duration-200">
+      {/* MOBILE FIXED BOTTOM ACTION BAR */}
+      <div
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-2.5 xs:p-3 bg-[#050706]/95 backdrop-blur-xl border-t border-[#1A3025] shadow-2xl animate-in fade-in duration-200"
+        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0.75rem))" }}
+      >
         <div className="max-w-md mx-auto grid grid-cols-2 gap-2 xs:gap-2.5">
           <a
             href={getWhatsappUrl()}

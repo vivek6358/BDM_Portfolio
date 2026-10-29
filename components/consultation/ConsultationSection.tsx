@@ -13,7 +13,7 @@ export default function ConsultationSection({ onOpenMeeting }: ConsultationSecti
     <section id="consultation" className="scroll-mt-16 sm:scroll-mt-20 py-16 sm:py-24 md:py-36 border-t border-[#1A3025]/60 relative text-center">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Large Heading */}
-        <h2 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.04] sm:leading-[0.98] mb-4 sm:mb-6">
+        <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.12] sm:leading-[0.98] mb-4 sm:mb-6">
           HAVE A
           <br />
           <span className="font-bold text-[#00C878]">REQUIREMENT IN MIND?</span>

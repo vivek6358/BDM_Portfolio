@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100" fill="none">
+  <!-- Brand Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Hexagonal Crest Background -->
+    <path d="M40 0L76 21V63L40 84L4 63V21L40 0Z" fill="#0D1712" stroke="#1A3025" stroke-width="2"/>
+    
+    <!-- Stylized Geometric 'A' / Interconnected Network Node -->
+    <path d="M40 16L60 56H49L44.5 46H35.5L31 56H20L40 16Z" fill="#F4F7F5"/>
+    <path d="M37.5 40H42.5L40 33L37.5 40Z" fill="#0D1712"/>
+    
+    <!-- Emerald Energy Accent Bar & Pulse Node -->
+    <path d="M28 50H52" stroke="#00C878" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="40" cy="20" r="3.5" fill="#00C878"/>
+    <circle cx="24" cy="56" r="2.5" fill="#00C878"/>
+    <circle cx="56" cy="56" r="2.5" fill="#00C878"/>
+    <circle cx="40" cy="74" r="3" fill="#20E58A"/>
+    <line x1="40" y1="50" x2="40" y2="71" stroke="#00C878" stroke-width="2" stroke-dasharray="2 2"/>
+  </g>
+
+  <!-- Typography -->
+  <!-- Main Name: ALBORISS -->
+  <text x="105" y="52" font-family="'JetBrains Mono', 'Segoe UI', sans-serif" font-size="34" font-weight="900" fill="#F4F7F5" letter-spacing="4">
+    ALBORISS
+  </text>
+  
+  <!-- Suffix: PVT. LTD. -->
+  <text x="107" y="74" font-family="'JetBrains Mono', 'Segoe UI', monospace" font-size="12" font-weight="600" fill="#00C878" letter-spacing="6">
+    PVT. LTD. • ENTERPRISE
+  </text>
+</svg>

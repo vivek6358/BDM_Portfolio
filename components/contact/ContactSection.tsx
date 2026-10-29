@@ -24,7 +24,7 @@ export default function ContactSection({
               08 // DIRECT INITIATION
             </span>
 
-            <h2 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.04] sm:leading-[0.98] mb-4 sm:mb-6">
+            <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.12] sm:leading-[0.98] mb-4 sm:mb-6">
               LET&apos;S DISCUSS
               <br />
               <span className="font-bold text-[#00C878]">THE REQUIREMENT.</span>

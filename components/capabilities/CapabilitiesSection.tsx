@@ -21,7 +21,7 @@ export default function CapabilitiesSection({ onSelectIndustry }: CapabilitiesSe
             <span className="text-xs font-mono tracking-widest text-[#00C878] uppercase mb-3 sm:mb-4 block font-semibold">
               02 // CAPABILITIES
             </span>
-            <h2 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.04] sm:leading-[0.98]">
+            <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.12] sm:leading-[0.98]">
               WHAT CAN I
               <br />
               <span className="font-bold text-[#00C878]">HELP YOU OUTSOURCE?</span>
@@ -39,7 +39,7 @@ export default function CapabilitiesSection({ onSelectIndustry }: CapabilitiesSe
             <span className="text-xs font-mono tracking-widest text-[#00C878] uppercase mb-3 sm:mb-4 block font-semibold">
               03 // PROCESS ARCHITECTURE
             </span>
-            <h2 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.04] sm:leading-[0.98]">
+            <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.12] sm:leading-[0.98]">
               FROM REQUIREMENT
               <br />
               <span className="font-bold text-[#00C878]">TO THE RIGHT CAPABILITY.</span>

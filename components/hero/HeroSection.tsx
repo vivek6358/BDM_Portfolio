@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, Calendar, MapPin, Briefcase, Clock } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Briefcase } from "lucide-react";
 import AbstractNetworkVisual from "./AbstractNetworkVisual";
+import AnimatedNumber from "@/components/ui/AnimatedNumber";
 import { PERSONAL_INFO } from "@/data/portfolioData";
 
 interface HeroSectionProps {
@@ -30,19 +31,19 @@ export default function HeroSection({ onOpenMeeting }: HeroSectionProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-8 items-center">
           {/* Left Column: Focused Executive Copy & CTAs */}
           <div className="lg:col-span-7 flex flex-col justify-center text-left">
-            {/* Small label (Hidden on mobile responsive per user request) */}
+            {/* Small label (Hidden on mobile as requested, clean on tablet/desktop) */}
             <div className="hidden sm:block mb-3 sm:mb-5">
-              <span className="editorial-eyebrow font-mono text-[9px] xs:text-[10px] sm:text-xs">
+              <span className="editorial-eyebrow font-mono text-[8px] xs:text-[9.5px] sm:text-xs inline-flex max-w-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00C878] animate-pulse flex-shrink-0" />
-                <span className="break-words">BUSINESS DEVELOPMENT • OUTSOURCING • PARTNERSHIPS</span>
+                <span className="truncate xs:whitespace-normal">BUSINESS DEVELOPMENT • OUTSOURCING • PARTNERSHIPS</span>
               </span>
             </div>
 
             {/* Large headline */}
-            <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-semibold tracking-tight text-[#F4F7F5] leading-[1.12] sm:leading-[1.1] mb-4 sm:mb-6 uppercase">
+            <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-[64px] font-semibold tracking-tight text-[#F4F7F5] leading-[1.16] sm:leading-[1.1] mb-3 sm:mb-6 uppercase">
               TURNING BUSINESS
-              <br />
-              REQUIREMENTS INTO
+              <br className="hidden xs:inline" />
+              {" "}REQUIREMENTS INTO
               <br />
               <span className="text-[#00C878] font-bold">
                 SCALABLE SOLUTIONS.
@@ -50,12 +51,12 @@ export default function HeroSection({ onOpenMeeting }: HeroSectionProps) {
             </h1>
 
             {/* Supporting line */}
-            <p className="text-sm xs:text-base sm:text-lg md:text-xl text-[#9AA7A0] leading-relaxed max-w-xl font-normal mb-6 sm:mb-8">
+            <p className="text-xs xs:text-sm sm:text-base md:text-xl text-[#9AA7A0] leading-relaxed max-w-xl font-normal mb-5 sm:mb-8">
               I connect businesses with the right outsourcing and technology capabilities.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 mb-5 sm:mb-8">
               {/* Primary CTA */}
               <a
                 href="#planner"
@@ -77,18 +78,26 @@ export default function HeroSection({ onOpenMeeting }: HeroSectionProps) {
             </div>
 
             {/* Small metadata */}
-            <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 sm:gap-3 text-[10px] xs:text-[11px] sm:text-xs font-mono text-[#9AA7A0]">
+            <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 sm:gap-3 text-[9px] xs:text-[10px] sm:text-xs font-mono text-[#9AA7A0]">
               <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[#0D1712] border border-[#1A3025]">
-                <Clock className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
-                <span>1 YEAR EXPERIENCE</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C878] flex-shrink-0 animate-pulse" />
+                <span className="text-[#F4F7F5] font-bold">
+                  <AnimatedNumber value={15} suffix="+" /> B2B ENGAGEMENTS
+                </span>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[#0D1712] border border-[#1A3025]">
-                <MapPin className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
-                <span>HYDERABAD, INDIA</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00C878] flex-shrink-0" />
+                <span className="text-[#F4F7F5] font-semibold">
+                  <AnimatedNumber value={7} /> DOMAINS
+                </span>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[#0D1712] border border-[#1A3025]">
                 <Briefcase className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
                 <span>ALBORISS PVT. LTD.</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[#0D1712] border border-[#1A3025]">
+                <MapPin className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
+                <span>HYDERABAD, INDIA</span>
               </div>
             </div>
           </div>

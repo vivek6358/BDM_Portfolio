@@ -16,11 +16,11 @@ const ALLOWED_INDUSTRIES = [
   "Healthcare",
   "IT",
   "Information Technology",
+  "Digital",
   "Digitalization",
   "Artificial Intelligence",
   "Consulting",
   "Infrastructure",
-  "ML / Robotics",
   "Other",
 ];
 
@@ -87,8 +87,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const referenceId = `REQ-${Date.now().toString(36).toUpperCase()}`;
+    const recipientEmail = process.env.CONTACT_EMAIL_TO || "vivek.bandari@alboriss.com";
+
     // Prepare lead payload
     const leadPayload = {
+      referenceId,
       fullName,
       companyName,
       businessEmail,
@@ -97,10 +101,44 @@ export async function POST(request: Request) {
       requirement,
       message,
       submittedAt: new Date().toISOString(),
-      recipient: "vivek.bandari@alboriss.com",
+      recipient: recipientEmail,
     };
 
-    // If an external webhook or endpoint is configured in environment, dispatch to it
+    // 1. If RESEND_API_KEY is configured, send official email
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (resendApiKey) {
+      try {
+        const fromAddress = process.env.RESEND_FROM || "onboarding@resend.dev";
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${resendApiKey}`,
+          },
+          body: JSON.stringify({
+            from: fromAddress,
+            to: [recipientEmail],
+            reply_to: businessEmail,
+            subject: `[New Lead ${referenceId}] ${fullName} - ${companyName} (${industry})`,
+            html: `
+              <h2>New Outsourcing Requirement Received</h2>
+              <p><strong>Reference ID:</strong> ${referenceId}</p>
+              <p><strong>Name:</strong> ${fullName}</p>
+              <p><strong>Company:</strong> ${companyName}</p>
+              <p><strong>Business Email:</strong> ${businessEmail}</p>
+              <p><strong>Industry:</strong> ${industry}</p>
+              <p><strong>Requirement:</strong></p>
+              <blockquote style="background:#f4f4f4;padding:12px;border-left:4px solid #00C878;">${requirement}</blockquote>
+              <p><small>Submitted via Vivek Bandari BDM Portfolio at ${leadPayload.submittedAt}</small></p>
+            `,
+          }),
+        });
+      } catch (emailErr) {
+        console.error("Failed to dispatch email via Resend:", emailErr);
+      }
+    }
+
+    // 2. If an external webhook is configured (e.g., Slack, Zapier, Make, CRM), dispatch to it
     const externalWebhook = process.env.CONTACT_WEBHOOK_URL;
     if (externalWebhook) {
       try {
@@ -114,8 +152,9 @@ export async function POST(request: Request) {
       }
     }
 
-    // In-memory / server log
+    // Server log
     console.log("New B2B Requirement Received for Vivek Bandari:", {
+      referenceId,
       fullName,
       companyName,
       businessEmail,
@@ -127,7 +166,7 @@ export async function POST(request: Request) {
       success: true,
       message: "Requirement received successfully. Vivek will review your scope and get in touch within 24 hours.",
       data: {
-        referenceId: `REQ-${Date.now().toString(36).toUpperCase()}`,
+        referenceId,
         name: fullName,
         company: companyName,
         industry,

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { PERSONAL_INFO } from "@/data/portfolioData";
 
@@ -39,7 +40,6 @@ export const metadata: Metadata = {
     "Healthcare BPO",
     "Banking Operations",
     "AI Data Annotation",
-    "Robotics",
     "Digitalization",
   ],
   authors: [{ name: PERSONAL_INFO.name, url: PERSONAL_INFO.personalLinkedin }],
@@ -149,6 +149,7 @@ export default function RootLayout({
       </head>
       <body className="bg-[#050706] text-[#F4F7F5] font-sans antialiased selection:bg-[#00C878]/25 selection:text-[#F4F7F5]">
         {children}
+        <Analytics />
       </body>
     </html>
   );

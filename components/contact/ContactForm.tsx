@@ -161,7 +161,7 @@ export default function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8 select-none">
+    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
       {submissionResult && !submissionResult.success && (
         <div className="p-3 border-b border-red-500/50 flex items-center gap-2 text-xs text-red-400">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -221,6 +221,10 @@ export default function ContactForm({
           placeholder="you@company.com"
           className="w-full py-3 bg-transparent border-b border-[#1A3025] focus:border-[#00C878] text-base sm:text-sm text-[#F4F7F5] placeholder-[#6F7E76]/60 focus:outline-none transition-colors"
         />
+        <p className="text-[10px] font-mono text-[#6F7E76] mt-1.5 flex items-center gap-1.5">
+          <span className="w-1 h-1 rounded-full bg-[#00C878]/70" />
+          We only use your email to reply to your enquiry.
+        </p>
         {errors.email && (
           <p className="text-[11px] text-red-400 mt-1 font-mono">{errors.email}</p>
         )}

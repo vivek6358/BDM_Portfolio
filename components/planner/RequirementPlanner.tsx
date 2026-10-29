@@ -49,11 +49,11 @@ export default function RequirementPlanner({
     <section id="planner" className="scroll-mt-16 sm:scroll-mt-20 py-16 sm:py-24 md:py-36 border-t border-[#1A3025]/60 relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <div className="text-center mb-10 sm:mb-16">
-          <span className="text-xs font-mono tracking-widest text-[#00C878] uppercase mb-3 sm:mb-4 block font-semibold">
+        <div className="text-center mb-8 sm:mb-16">
+          <span className="text-[11px] sm:text-xs font-mono tracking-widest text-[#00C878] uppercase mb-2.5 sm:mb-4 block font-semibold">
             06 // CONSULTATION SELECTOR
           </span>
-          <h2 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.04] sm:leading-[0.98]">
+          <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-light tracking-tight text-[#F4F7F5] uppercase leading-[1.12] sm:leading-[0.98]">
             WHAT ARE YOU
             <br />
             <span className="font-bold text-[#00C878]">LOOKING TO OUTSOURCE?</span>

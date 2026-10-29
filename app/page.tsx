@@ -11,6 +11,7 @@ import AboutSection from "@/components/about/AboutSection";
 import CapabilitiesSection from "@/components/capabilities/CapabilitiesSection";
 import TimelineSection from "@/components/process/TimelineSection";
 import ApproachSection from "@/components/approach/ApproachSection";
+import CredibilitySection from "@/components/credibility/CredibilitySection";
 import RequirementPlanner from "@/components/planner/RequirementPlanner";
 import ConsultationSection from "@/components/consultation/ConsultationSection";
 import AlborissSection from "@/components/alboriss/AlborissSection";
@@ -60,7 +61,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen text-[#F4F7F5] bg-[#050706] selection:bg-[#00C878]/25 selection:text-[#F4F7F5]">
+    <div className="relative min-h-screen text-[#F4F7F5] bg-[#050706] selection:bg-[#00C878]/25 selection:text-[#F4F7F5] overflow-x-hidden">
       {/* Calm Visual Canvas Background & Subtle Cursor */}
       <FuturisticBackground />
       <CustomCursor />
@@ -86,7 +87,10 @@ export default function Home() {
         {/* SECTION 6: WHY WORK WITH ME (Strong editorial statement + 4 clean principles) */}
         <ApproachSection />
 
-        {/* SECTION 7: OUTSOURCING SELECTOR (Simple category buttons + whitespace) */}
+        {/* SECTION 7: PROOF & TRACK RECORD (Metrics, Testimonials, Case Studies) */}
+        <CredibilitySection />
+
+        {/* SECTION 8: OUTSOURCING SELECTOR (Simple category buttons + whitespace) */}
         <RequirementPlanner
           selectedPlannerOption={selectedPlannerOption}
           onSelectPlannerOption={(optId) => setSelectedPlannerOption(optId)}

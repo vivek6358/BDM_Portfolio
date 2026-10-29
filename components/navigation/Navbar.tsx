@@ -10,8 +10,8 @@ interface NavbarProps {
 
 const NAV_LINKS = [
   { name: "Home", href: "#hero" },
+  { name: "About", href: "#about" },
   { name: "Capabilities", href: "#capabilities" },
-  { name: "Process", href: "#process" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -52,7 +52,7 @@ export default function Navbar({ onOpenMeeting }: NavbarProps) {
       }
 
       // Determine active section
-      const sections = ["hero", "capabilities", "process", "contact"];
+      const sections = ["hero", "about", "capabilities", "contact"];
       const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
@@ -163,8 +163,11 @@ export default function Navbar({ onOpenMeeting }: NavbarProps) {
       {/* Mobile Slide-down Fullscreen Menu */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-30 bg-[#050706]/98 backdrop-blur-2xl md:hidden pt-24 px-5 xs:px-6 flex flex-col justify-between pb-8 overflow-y-auto animate-in fade-in duration-200"
-          style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}
+          className="fixed inset-0 z-30 bg-[#050706]/98 backdrop-blur-2xl md:hidden px-5 xs:px-6 flex flex-col justify-between overflow-y-auto animate-in fade-in duration-200"
+          style={{
+            paddingTop: "max(5.5rem, calc(env(safe-area-inset-top, 0px) + 4.5rem))",
+            paddingBottom: "max(2rem, env(safe-area-inset-bottom, 0px))",
+          }}
         >
           {/* Backdrop Tap to close */}
           <div
