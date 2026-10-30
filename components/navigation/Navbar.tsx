@@ -74,10 +74,13 @@ export default function Navbar({ onOpenMeeting }: NavbarProps) {
 
   const handleLinkClick = (href: string) => {
     setMobileMenuOpen(false);
+    document.body.style.overflow = "";
     const targetId = href.replace("#", "");
     const element = document.getElementById(targetId);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: "smooth" });
+      }, 50);
     }
   };
 

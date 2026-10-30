@@ -231,7 +231,14 @@ export default function ScrollDrone() {
       if (isMob) {
         // Smoothly interpolate scroll position for fluid motion
         const scroll = scrollStateRef.current;
-        scroll.smoothScrollY += (scroll.scrollY - scroll.smoothScrollY) * 0.12;
+        const rawDiff = scroll.scrollY - scroll.smoothScrollY;
+        const absDiff = Math.abs(rawDiff);
+
+        // Prevent hyper-oscillation / stuck glitch when user clicks menu links (e.g. jumping 3000px):
+        // 1. Clamp maximum scroll advancement per frame
+        const maxStep = 32;
+        const step = Math.sign(rawDiff) * Math.min(absDiff * 0.10, maxStep);
+        scroll.smoothScrollY += step;
 
         const width = window.innerWidth;
         const isSmall = width < 480;
@@ -240,11 +247,16 @@ export default function ScrollDrone() {
         // Screen boundary safety margins
         const minX = droneW / 2 + 18;
         const maxX = width - droneW / 2 - 18;
-        const amplitudeX = (maxX - minX) / 2;
+        const baseAmplitudeX = (maxX - minX) / 2;
         const midX = (minX + maxX) / 2;
 
-        // Harmonic zig-zag wavelength: ~850px per complete cycle
-        const cycleDistance = 850;
+        // When jumping long distances (nav menu clicks), damp lateral oscillation to prevent wild shaking
+        const isJumping = absDiff > 200;
+        const dampingFactor = isJumping ? Math.max(0.2, 1 - (absDiff / 1400)) : 1;
+        const amplitudeX = baseAmplitudeX * dampingFactor;
+
+        // Harmonic zig-zag wavelength: ~950px per complete cycle for calmer motion
+        const cycleDistance = 950;
         const phase = (scroll.smoothScrollY / cycleDistance) * Math.PI * 2 + Math.PI * 0.5;
 
         // Target coordinates
@@ -254,15 +266,16 @@ export default function ScrollDrone() {
         const maxY = Math.min(window.innerHeight - 100, window.innerHeight * 0.68);
         const midY = (minY + maxY) / 2;
         const amplitudeY = (maxY - minY) / 2;
-        targets.y = midY + Math.cos(phase * 0.6) * (amplitudeY * 0.65);
+        targets.y = midY + Math.cos(phase * 0.5) * (amplitudeY * 0.55 * dampingFactor);
 
-        // Aerodynamic banking into turn
+        // Aerodynamic banking into turn (softened and clamped)
         const xVelocityFactor = Math.cos(phase);
-        targets.roll = Math.max(-16, Math.min(16, xVelocityFactor * 14));
+        targets.roll = Math.max(-12, Math.min(12, xVelocityFactor * 10 * dampingFactor));
 
         const deltaY = scroll.scrollY - scroll.prevScrollY;
         scroll.prevScrollY = scroll.scrollY;
-        targets.pitch = Math.max(-14, Math.min(14, deltaY * 0.35));
+        const clampedDelta = Math.max(-30, Math.min(30, deltaY));
+        targets.pitch = Math.max(-10, Math.min(10, clampedDelta * 0.25));
       }
 
       // Smooth coordinate LERP
