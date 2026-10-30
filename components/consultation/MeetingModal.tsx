@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { X, Calendar, MessageSquare, Mail, ExternalLink, Clock, Video, CheckCircle2 } from "lucide-react";
+import { X, Calendar, MessageSquare, Mail, Phone, Clock, Video, CheckCircle2, ArrowRight } from "lucide-react";
 import { PERSONAL_INFO, getWhatsappUrl } from "@/data/portfolioData";
 
 interface MeetingModalProps {
@@ -26,7 +26,15 @@ export default function MeetingModal({ isOpen, onClose }: MeetingModalProps) {
 
   if (!isOpen) return null;
 
-  const bookingUrl = PERSONAL_INFO.bookingUrl;
+  const handleScrollToContact = () => {
+    onClose();
+    setTimeout(() => {
+      const contactEl = document.getElementById("contact");
+      if (contactEl) {
+        contactEl.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 60);
+  };
 
   return (
     <div
@@ -62,7 +70,7 @@ export default function MeetingModal({ isOpen, onClose }: MeetingModalProps) {
           </div>
           <div>
             <span className="text-[10px] font-mono tracking-widest text-[#00C878] uppercase font-bold block mb-0.5">
-              DIRECT CALENDAR SCHEDULER
+              DIRECT CONSULTATION
             </span>
             <h3 id="meeting-modal-title" className="text-lg xs:text-xl font-bold font-mono text-[#F4F7F5] uppercase">
               Schedule a Consultation
@@ -78,28 +86,33 @@ export default function MeetingModal({ isOpen, onClose }: MeetingModalProps) {
           </div>
           <div className="flex items-center gap-2 text-xs text-[#C2D1C9]">
             <Video className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
-            <span><strong>Format:</strong> Google Meet / Direct Conference Video</span>
+            <span><strong>Format:</strong> Google Meet / Direct Conference / Call</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-[#C2D1C9]">
             <CheckCircle2 className="w-3.5 h-3.5 text-[#00C878] flex-shrink-0" />
-            <span><strong>Agenda:</strong> Scope, technical feasibility & squad matching</span>
+            <span><strong>Agenda:</strong> Scope assessment, squad matching & kickoff</span>
           </div>
         </div>
 
-        {/* PRIMARY ACTION: Direct Calendly Booking */}
+        {/* PRIMARY ACTIONS: Direct WhatsApp & Web Form Scheduling */}
         <div className="space-y-3 mb-6">
           <a
-            href={bookingUrl}
+            href={getWhatsappUrl("Hi Vivek, I would like to schedule a 15-minute consultation to discuss an outsourcing requirement.")}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#00C878] hover:bg-[#20E58A] text-[#050706] font-mono font-bold text-xs sm:text-sm transition-all shadow-glow-emerald-sm cursor-pointer"
           >
-            <span>SELECT TIME SLOT ON CALENDLY</span>
-            <ExternalLink className="w-4 h-4 text-[#050706]" />
+            <MessageSquare className="w-4 h-4 text-[#050706]" />
+            <span>COORDINATE TIME VIA WHATSAPP</span>
           </a>
-          <p className="text-[11px] text-[#6F7E76] font-mono text-center">
-            Instantly syncs with your Google / Outlook calendar with meeting link.
-          </p>
+
+          <button
+            onClick={handleScrollToContact}
+            className="w-full min-h-[46px] inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-[#121F19] hover:bg-[#1A3025] text-[#F4F7F5] border border-[#00C878]/40 hover:border-[#00C878] font-mono font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
+          >
+            <span>SUBMIT CONSULTATION REQUEST (WEB FORM)</span>
+            <ArrowRight className="w-4 h-4 text-[#00C878]" />
+          </button>
         </div>
 
         {/* Separator */}
@@ -115,28 +128,20 @@ export default function MeetingModal({ isOpen, onClose }: MeetingModalProps) {
         {/* Alternative Fast Channels */}
         <div className="space-y-2.5">
           <a
-            href={getWhatsappUrl("Hi Vivek, I would like to schedule a 15-minute introductory meeting to discuss an outsourcing requirement.")}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`mailto:${PERSONAL_INFO.email}?subject=Consultation%20Request%20-%20Outsourcing%20Requirement&body=Hi%20Vivek,%0A%0AI%20would%20like%20to%20schedule%20a%20consultation%20to%20discuss%20our%20outsourcing%20requirement.%0A%0ACompany:%0ARequirement:%0APreferred%20Date%20%26%20Time:`}
             className="w-full min-h-[44px] flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#09110D] hover:bg-[#121F19] text-[#F4F7F5] border border-[#1A3025] hover:border-[#00C878]/50 text-xs font-mono transition-colors"
           >
-            <MessageSquare className="w-4 h-4 text-[#00C878]" />
-            <span>Coordinate Time via WhatsApp</span>
+            <Mail className="w-4 h-4 text-[#00C878]" />
+            <span>Email Request: {PERSONAL_INFO.email}</span>
           </a>
 
           <a
-            href={`mailto:${PERSONAL_INFO.email}?subject=Meeting%20Request%20-%20Outsourcing%20Requirement&body=Hi%20Vivek,%0A%0AI%20would%20like%20to%20schedule%20a%20meeting%20to%20discuss%20our%20outsourcing%20requirement.%0A%0ACompany:%0ARequirement:%0APreferred%20Date%20%26%20Time:`}
+            href={`tel:${PERSONAL_INFO.rawPhone}`}
             className="w-full min-h-[44px] flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#09110D] hover:bg-[#121F19] text-[#F4F7F5] border border-[#1A3025] hover:border-[#00C878]/50 text-xs font-mono transition-colors"
           >
-            <Mail className="w-4 h-4 text-[#9AA7A0]" />
-            <span>Email Meeting Request ({PERSONAL_INFO.email})</span>
+            <Phone className="w-4 h-4 text-[#00C878]" />
+            <span>Direct Call: {PERSONAL_INFO.phone}</span>
           </a>
-        </div>
-
-        <div className="mt-6 pt-4 border-t border-[#1A3025] text-center">
-          <p className="text-xs text-[#6F7E76] font-mono">
-            Direct Line: <a href={`tel:${PERSONAL_INFO.rawPhone}`} className="text-[#F4F7F5] hover:text-[#00C878]">{PERSONAL_INFO.phone}</a>
-          </p>
         </div>
       </div>
     </div>

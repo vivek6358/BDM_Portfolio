@@ -65,8 +65,6 @@ export const PERSONAL_INFO = {
   personalLinkedin: "https://www.linkedin.com/in/vivek-bandari-33b060258/",
   companyWebsite: "https://alboriss.com/",
   companyLinkedin: "https://www.linkedin.com/company/alboriss/posts/?feedView=all",
-  bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || "https://calendly.com/vivek-bandari/15min",
-  bookingUrlEnv: process.env.NEXT_PUBLIC_BOOKING_URL || "https://calendly.com/vivek-bandari/15min",
   contactEndpoint: process.env.NEXT_PUBLIC_CONTACT_ENDPOINT || "/api/contact",
 };
 
