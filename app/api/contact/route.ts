@@ -104,35 +104,78 @@ export async function POST(request: Request) {
       recipient: recipientEmail,
     };
 
-    // 1. If RESEND_API_KEY is configured, send official email
-    const resendApiKey = process.env.RESEND_API_KEY;
+    // 1. If RESEND_API_KEY (or RESEND_APT_KEY) is configured, send official email
+    const resendApiKey = process.env.RESEND_API_KEY || process.env.RESEND_APT_KEY;
+    let emailStatus = { sent: false, details: "" };
+
     if (resendApiKey) {
       try {
         const fromAddress = process.env.RESEND_FROM || "onboarding@resend.dev";
-        await fetch("https://api.resend.com/emails", {
+        const emailBody = {
+          from: fromAddress,
+          to: [recipientEmail],
+          reply_to: businessEmail,
+          subject: `[New Lead ${referenceId}] ${fullName} - ${companyName} (${industry})`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+              <h2 style="color: #00C878; margin-top: 0;">New Outsourcing Requirement Received</h2>
+              <p><strong>Reference ID:</strong> ${referenceId}</p>
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 16px 0;" />
+              <p><strong>Full Name:</strong> ${fullName}</p>
+              <p><strong>Company:</strong> ${companyName}</p>
+              <p><strong>Business Email:</strong> <a href="mailto:${businessEmail}">${businessEmail}</a></p>
+              <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+              <p><strong>Industry:</strong> ${industry}</p>
+              <p><strong>Requirement Details:</strong></p>
+              <blockquote style="background:#f9f9f9; padding: 14px; border-left: 4px solid #00C878; margin: 10px 0; font-size: 14px; line-height: 1.5;">${requirement}</blockquote>
+              ${message ? `<p><strong>Additional Message:</strong></p><p style="color: #555;">${message}</p>` : ""}
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #888;">Submitted via Vivek Bandari Portfolio (<a href="https://vivekbandari.com">vivekbandari.com</a>) on ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST</p>
+            </div>
+          `,
+        };
+
+        let resendRes = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${resendApiKey}`,
+            Authorization: `Bearer ${resendApiKey.trim()}`,
           },
-          body: JSON.stringify({
-            from: fromAddress,
-            to: [recipientEmail],
-            reply_to: businessEmail,
-            subject: `[New Lead ${referenceId}] ${fullName} - ${companyName} (${industry})`,
-            html: `
-              <h2>New Outsourcing Requirement Received</h2>
-              <p><strong>Reference ID:</strong> ${referenceId}</p>
-              <p><strong>Name:</strong> ${fullName}</p>
-              <p><strong>Company:</strong> ${companyName}</p>
-              <p><strong>Business Email:</strong> ${businessEmail}</p>
-              <p><strong>Industry:</strong> ${industry}</p>
-              <p><strong>Requirement:</strong></p>
-              <blockquote style="background:#f4f4f4;padding:12px;border-left:4px solid #00C878;">${requirement}</blockquote>
-              <p><small>Submitted via Vivek Bandari BDM Portfolio at ${leadPayload.submittedAt}</small></p>
-            `,
-          }),
+          body: JSON.stringify(emailBody),
         });
+
+        let resendData = await resendRes.json();
+
+        // If Resend free tier rejects due to test email restriction (onboarding@resend.dev can only send to account owner):
+        if (!resendRes.ok) {
+          console.warn("Primary Resend dispatch failed:", resendRes.status, resendData);
+          const errorMsg = resendData?.message || "";
+          const match = errorMsg.match(/to your own email address \(([^)]+)\)/i);
+
+          if (match && match[1]) {
+            const fallbackOwnerEmail = match[1];
+            console.log(`Auto-retrying Resend with verified owner email: ${fallbackOwnerEmail}`);
+            emailBody.to = [fallbackOwnerEmail];
+
+            resendRes = await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${resendApiKey.trim()}`,
+              },
+              body: JSON.stringify(emailBody),
+            });
+            resendData = await resendRes.json();
+          }
+        }
+
+        if (resendRes.ok) {
+          emailStatus = { sent: true, details: `Delivered via Resend: ${resendData?.id || "OK"}` };
+          console.log("Email successfully dispatched via Resend:", resendData);
+        } else {
+          emailStatus = { sent: false, details: resendData?.message || "Failed" };
+          console.error("Resend API error:", resendRes.status, resendData);
+        }
       } catch (emailErr) {
         console.error("Failed to dispatch email via Resend:", emailErr);
       }
